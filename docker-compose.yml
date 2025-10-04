@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  cron-supervisor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
