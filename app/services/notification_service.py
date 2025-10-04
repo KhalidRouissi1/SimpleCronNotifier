@@ -28,7 +28,6 @@ class NotificationService:
             logger.warning("SLACK_WEBHOOK_URL not set. Skipping Slack notification.")
             return
 
-        # Check daily limit (10 notifications per day)
         if not force and not self.db.can_send_notification(max_per_day=10):
             logger.info("Daily Slack notification limit reached (10/day). Skipping notification.")
             return
@@ -52,7 +51,6 @@ class NotificationService:
             response = requests.post(Config.SLACK_WEBHOOK_URL, json=payload, timeout=10)
             response.raise_for_status()
 
-            # Increment counter on successful send
             count = self.db.increment_today_count()
             logger.info(f"Slack notification sent ({count}/10 today): {message}")
 

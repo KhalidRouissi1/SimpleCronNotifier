@@ -17,17 +17,14 @@ def setup_logger(name: str = "cronJob") -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
 
-    # Avoid duplicate handlers
     if logger.handlers:
         return logger
 
-    # Console handler
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     console_formatter = logging.Formatter('[%(asctime)s] %(levelname)s - %(message)s')
     console_handler.setFormatter(console_formatter)
 
-    # File handler with rotation
     log_file = os.path.join(Config.LOG_DIR, "app.log")
     file_handler = RotatingFileHandler(
         log_file,

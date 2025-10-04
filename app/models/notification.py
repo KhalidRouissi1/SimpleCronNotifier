@@ -75,7 +75,6 @@ class NotificationDatabase:
 
         conn.commit()
 
-        # Get updated count
         cursor.execute('SELECT count FROM notifications WHERE date = ?', (today,))
         result = cursor.fetchone()
 

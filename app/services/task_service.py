@@ -37,11 +37,9 @@ class TaskService:
         task.start_time = datetime.now()
         task.status = "running"
 
-        # Create unique log file
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         task.log_file_path = os.path.join(Config.LOG_DIR, f"{task.name}_{timestamp}.log")
 
-        # Setup task-specific logger
         task_logger = self._setup_task_logger(task.name, task.log_file_path)
 
         try:
@@ -107,13 +105,11 @@ class TaskService:
         task_logger.info("EXECUTING TASK LOGIC")
         task_logger.info(f"Simulating work for task '{task_name}'...")
 
-        # Simulate processing steps
         for i in range(1, 4):
             task_logger.info(f"  Step {i}/3: Processing...")
             time.sleep(0.1)
             task_logger.info(f"  Step {i}/3: Completed")
 
-        # Simulate potential failure (10% chance)
         if random.random() < 0.1:
             raise ValueError("Simulated task failure!")
 

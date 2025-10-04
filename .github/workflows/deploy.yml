@@ -1,23 +1,30 @@
-name: Deploy to DigitalOcean
+name: Deploy to Server
 
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker build -t myapp .
       - name: Deploy via SSH
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DO_HOST }}
           username: ${{ secrets.DO_USER }}
-          key: ${{ secrets.DO_SSH_KEY }}
+          password: ${{ secrets.DO_PASSWORD }}
           script: |
-            cd /home/app
+            cd /root/SimpleCronNotifier || git clone https://github.com/KhalidRouissi1/SimpleCronNotifier.git /root/SimpleCronNotifier && cd /root/SimpleCronNotifier
+            git pull origin main
+
+            cat > .env << EOF
+            SLACK_WEBHOOK_URL="${{ secrets.SLACK_WEBHOOK_URL }}"
+            LOG_DIR="${{ secrets.LOG_DIR }}"
+            SLACK_NOTIFY_EVERY_MINUTE="${{ secrets.SLACK_NOTIFY_EVERY_MINUTE }}"
+            EOF
+
             docker-compose down
             docker-compose up -d --build
+            docker-compose ps

@@ -118,15 +118,12 @@ class SchedulerService:
 
     def start(self) -> None:
         """Start the scheduler with configured jobs."""
-        # Setup main job schedule
         if Config.CRON_SCHEDULE_MODE == "fixed":
             self._setup_fixed_schedule()
         else:
             self._setup_random_schedule()
 
-        # Setup Slack notifications
         self._setup_slack_notifications()
 
-        # Start scheduler
         self.scheduler.start()
         logger.info("Scheduler started successfully")

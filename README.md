@@ -1,84 +1,81 @@
-# Automated Cron Supervisor with Slack Notifications
+# Simple Cron Notifier
 
-This project implements an AI Ops Agent designed to supervise Python task execution in a production-grade environment. It handles task scheduling, logging, and Slack notifications for completion or errors.
+Production-grade FastAPI application for scheduled task execution with Slack notifications, extensive logging, and automated monitoring.
 
 ## Features
 
-- **Scheduled Task Execution**: Runs a script multiple times daily at random intervals.
-- **Comprehensive Logging**: Every run generates a unique log file capturing stdout, stderr, and timestamps.
-- **Slack Notifications**: Sends real-time notifications to Slack on task completion (success or failure) with relevant details.
-- **API for Manual Control**: A FastAPI service allows viewing logs and triggering manual task runs.
-- **Containerized Deployment**: Fully Dockerized for consistent deployment across environments.
-- **CI/CD with GitHub Actions**: Automates testing, Docker image building, and deployment to DigitalOcean.
+- **Scheduled Task Execution**: Random or fixed interval scheduling
+- **Extensive Logging**: Unique log file per task run with detailed metrics
+- **Slack Notifications**: Real-time notifications with daily limits (10/day)
+- **RESTful API**: View logs and trigger manual task runs
+- **MVC Architecture**: Clean separation with SOLID principles
+- **SQLite Tracking**: Notification limits and history
+- **Docker Support**: Containerized deployment
 
-## Project Structure
+## Architecture
 
-- `scheduler.py`: Handles cron job scheduling and random time generation for task execution.
-- `runner.py`: Executes the main task, manages logging, and sends Slack notifications.
-- `api.py`: FastAPI service for interacting with the system (viewing logs, triggering runs).
-- `Dockerfile`: Defines the Docker image for the application.
-- `docker-compose.yml`: Orchestrates the Docker containers for local development and deployment.
-- `.github/workflows/deploy.yml`: GitHub Actions workflow for CI/CD.
-- `docs/`: Contains detailed documentation (INSTALL.md, USAGE.md, ARCHITECTURE.md).
-- `logs/`: Directory for storing task execution logs.
+```
+app/
+├── config/          Configuration management
+├── models/          Data models (Task, NotificationDatabase)
+├── controllers/     API request handlers
+├── services/        Business logic
+└── utils/           Logging utilities
+```
 
-## Getting Started
+## Quick Start
 
-Refer to the `docs/INSTALL.md` for deployment instructions and `docs/USAGE.md` for how to interact with the system.
+### Local Development
 
-## Development
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
 
-### Prerequisites
+### Docker
 
-- Docker
-- Docker Compose
-- Python 3. +
-
-### Local Setup
-
-1.  **Clone the repository:**
-    ```bash
-    git clone <your-repo-url>
-    cd cronJob
-    ```
-
-2.  **Build and run with Docker Compose:**
-    ```bash
-    docker-compose up --build -d
-    ```
-
-3.  **Access the API:**
-    The FastAPI application will be available at `http://localhost:8000`.
-    Access the API documentation at `http://localhost:8000/docs`.
-
-### Running without Docker (for development/testing)
-
-1.  **Create a virtual environment and install dependencies:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
-
-2.  **Run the scheduler (example):**
-    ```bash
-    python scheduler.py
-    ```
-
-3.  **Run the runner (example):**
-    ```bash
-    python runner.py
-    ```
-
-4.  **Run the API:**
-    ```bash
-    uvicorn api:app --host 0.0.0.0 --port 8000
-    ```
+```bash
+docker-compose up -d --build
+```
 
 ## Configuration
 
-- **Slack Webhook URL**: Set the `SLACK_WEBHOOK_URL` environment variable in your `docker-compose.yml` or deployment environment.
+Create `.env`:
 
-## Contributing
+```env
+SLACK_WEBHOOK_URL=your-webhook-url
+LOG_DIR=./logs
+CRON_SCHEDULE_MODE=random
+SLACK_NOTIFY_EVERY_MINUTE=False
+```
 
-Contributions are welcome! Please refer to `CONTRIBUTING.md` (if available) for guidelines.
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | Welcome |
+| POST | `/run_task/{name}` | Execute task |
+| GET | `/logs` | List logs |
+| GET | `/logs/{file}` | View log |
+| GET | `/docs` | API documentation |
+
+## Deployment
+
+Server: **159.89.28.26:8001**
+
+```bash
+ssh root@159.89.28.26
+curl -fsSL https://get.docker.com | sh
+git clone https://github.com/KhalidRouissi1/SimpleCronNotifier.git
+cd SimpleCronNotifier
+nano .env
+docker-compose up -d --build
+```
+
+Access: http://159.89.28.26:8001/docs
+
+## License
+
+MIT

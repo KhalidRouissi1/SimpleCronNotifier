@@ -11,28 +11,22 @@ from app.controllers.task_controller import TaskController
 from app.controllers.log_controller import LogController
 
 
-# Initialize configuration
 Config.ensure_directories()
 logger = setup_logger()
 logger.info(f"Application started. LOG_DIR: {Config.LOG_DIR}")
 
-# Initialize FastAPI app
 app = FastAPI(title="Cron Job API", version="1.0.0")
 
-# Initialize services (Dependency Injection)
 notification_service = NotificationService()
 task_service = TaskService(notification_service)
 scheduler_service = SchedulerService(task_service, notification_service)
 
-# Initialize controllers
 task_controller = TaskController(task_service)
 log_controller = LogController()
 
-# Start scheduler
 scheduler_service.start()
 
 
-# API Routes
 @app.get("/", response_class=PlainTextResponse)
 async def root():
     """Root endpoint with API information."""
